@@ -3,7 +3,7 @@ The API can be used when one or more tasks need to be executed
 providing output messages to the user. 
 It is also possible to request input to the user.
 
-Author: siasi (stefano dot iasi at gmail dot com)
+Author: siasi@cisco.com
 Date: December 2013
 """
 
