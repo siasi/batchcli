@@ -6,8 +6,8 @@ class BatchCliTest(unittest.TestCase):
 
     def setUp(self):
     	self.cli = FakeCli()
-    	self.c = BatchCli(2, self.cli)
-
+    	self.c = BatchCli(self.cli)
+        self.c.expectTaskCount(2)
 
     def test_ask(self):
     	self.cli.pleaseAnswer("an answer")
@@ -133,7 +133,7 @@ class TaskEngineTest(unittest.TestCase):
 
     def setUp(self):
         self.cli = FakeCli()
-        self.c = BatchCli(2, self.cli)
+        self.c = BatchCli(self.cli)
         self.e = TaskEngine(self.c)
 
     def test_can_add_tasks(self):
@@ -144,6 +144,41 @@ class TaskEngineTest(unittest.TestCase):
         self.e.addTask(Task("T1"))
         self.e.addTask(Task("T2"))
         self.e.run()
+
+    def test_failure(self):
+        self.c = BatchCli(self.cli)
+        self.e = TaskEngine(self.c)
+
+        task1 = MockTask("T1")
+        failingTask = MockTask("T2")
+        failingTask.failed = True
+        task3 = MockTask("T3")
+
+        self.e.addTask(task1)
+        self.e.addTask(failingTask)
+
+        self.e.run()
+
+        self.assertTrue(task1.executed)
+        self.assertTrue(failingTask.executed)
+        self.assertFalse(task3.executed)
+
+    def test_addTask_count_tasks(self):
+       
+        self.e.addTask(MockTask("T1"))
+        self.e.addTask(MockTask("T2"))
+        self.e.addTask(MockTask("T3"))
+
+        self.assertEquals(3, self.e.taskToRun())
+
+class MockTask(Task):
+
+    def __init__(self, name):
+        Task.__init__(self, name)
+        self.executed = False
+
+    def run(self, cli):
+        self.executed = True
 
 class FakeCli(Cli):
 

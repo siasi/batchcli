@@ -7,17 +7,6 @@ Author: siasi@cisco.com
 Date: December 2013
 """
 
-class Cli():
-
-    def __init__(self):
-        pass
-
-    def log(self, message):
-        pass
-
-    def ask(self, message):
-        pass
-
 class BatchCli():
     """This class provides a simple API to ask input to the user and 
        track the progress of tasks execution sending message to a cli.
@@ -32,13 +21,16 @@ class BatchCli():
        The current value is automatically determined when the method newMessage is called.
        """
 
-    def __init__(self, tasksCount, cli):
+    def __init__(self, cli):
         self.startMarker = '['
         self.endMarker = ']'
         self.cli = cli
-        self.tasksCount = tasksCount
+        self.tasksCount = 0
         self.currentTask = 0
         self.__buildHeaderTokens()
+
+    def expectTaskCount(self, tasksCount):
+        self.tasksCount = tasksCount
 
     def newMessage(self, message):
         "Send a new message to the cli."
@@ -80,7 +72,6 @@ class BatchCli():
             options_str = self.__getOptionsString(suggest, default)
 
             while True:
-                #answer = raw_input(question + " (Y/N) [Y]").strip()
                 answer = self.__getAnswer(question, options_str)
 
                 validAnswers = [option.lower() for option in suggest]
@@ -131,28 +122,109 @@ class BatchCli():
     def __getProgressIndex(self):
         return str(self.currentTask) + "/" + str(self.tasksCount)
 
+class Cli():
+    "The CLI expected by BatchCli."
+
+    def log(self, message):
+        "Print the message to the CLI"
+        print message
+
+    def ask(self, message):
+        "Print the message to the CLI and read and return the input of the CLI."
+        return raw_input(message)
+
+
 class Task():
+    "A task executed by the Task Engine"
 
     def __init__(self, name):
         self.name = name
+        self.failed = False
 
     def run(self, cli):
         pass
 
-class TaskEngine():
+    def __key(self):
+        return self.name
 
-    def __init__(self, cli):
+    def __eq__(x, y):
+        if type(x) != type(y):
+            return False
+
+        return x.__key() == y.__key()
+
+    def __hash__(self):
+        return hash(self.__key())  
+
+    def __repr__(self):
+        return self.name
+
+class TaskEngine():
+    """The task engine able to run multiple Tasks in sequence.
+    Stop immediately when a task fails.
+    """
+
+    def __init__(self, batchCli):
+        "Needs a BatchCli to read/print input and output before runnign the tasks"
+        
         self.tasks = []
-        self.cli = cli
+        self.cli = batchCli
 
     def addTask(self, task):
+        "Add a task to be run. The method should be invocked before run()."
         self.tasks.append(task)
 
     def run(self):
+        """Run all the tasks added by invocking the add method.
+        Stop immediately if a task fails.
+        """
+
+        self.cli.expectTaskCount(self.taskToRun())
         for task in self.tasks:
             self.cli.newTask(task.name)
             task.run(self.cli)
+            if task.failed:
+                return
 
+    def taskToRun(self):
+        "Return the number of tasks to run."
+        return len(self.tasks)
+
+class SimpleCli():
+    """A simple implementation of the CLI expected by BatchCli.
+    Print and read from Standard Input and Standard Output.
+    """
+
+    def log(self, message):
+        "Print the message to Standard Ouput"
+        print message
+
+    def ask(self, message):
+        "Print the message to Standard Ouput and read the input from Standard Input."
+        return raw_input(message)
+
+
+
+
+if __name__ == "__main__":
+
+    class Print(Task):
+        "Simple Task: do nothing more than printing ..."
+
+        def run(self, cli):
+            cli.newMessage("...")
+
+    cli = SimpleCli()
+    bcli = BatchCli(cli)
+    engine = TaskEngine(bcli)
+    engine.addTask(Print("Put oil in the pan"))
+    engine.addTask(Print("Turn fire on"))
+    engine.addTask(Print("Break the egg"))
+    engine.addTask(Print("Put the egg in the pan"))
+    engine.addTask(Print("Wait the egg is cooked"))
+    engine.addTask(Print("Put the egg in the dish"))
+    engine.addTask(Print("Add salt to the egg and eat it!"))
+    engine.run()
 
 
 
