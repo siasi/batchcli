@@ -133,8 +133,7 @@ class TaskEngineTest(unittest.TestCase):
 
     def setUp(self):
         self.cli = FakeCli()
-        self.c = BatchCli(self.cli)
-        self.e = TaskEngine(self.c)
+        self.e = TaskEngine(self.cli)
 
     def test_can_add_tasks(self):
         self.e.addTask(Task("T1"))
@@ -146,8 +145,7 @@ class TaskEngineTest(unittest.TestCase):
         self.e.run()
 
     def test_failure(self):
-        self.c = BatchCli(self.cli)
-        self.e = TaskEngine(self.c)
+
 
         task1 = MockTask("T1")
         failingTask = MockTask("T2")

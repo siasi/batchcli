@@ -13,11 +13,11 @@ class TaskEngine():
     and provide output for each Task.
     """
 
-    def __init__(self, batchCli):
+    def __init__(self, cli):
         "Needs a BatchCli to read/print input and output before runnign the tasks"
         
         self.tasks = []
-        self.cli = batchCli
+        self.cli = BatchCli(cli)
 
     def addTask(self, task):
         "Add a task to be run. The method should be invocked before run()."
@@ -237,8 +237,7 @@ if __name__ == "__main__":
             cli.newMessage("...")
 
     cli = SimpleCli()
-    bcli = BatchCli(cli)
-    engine = TaskEngine(bcli)
+    engine = TaskEngine(cli)
     engine.addTask(Print("Put oil in the pan"))
     engine.addTask(Print("Turn fire on"))
     engine.addTask(Print("Break the egg"))
