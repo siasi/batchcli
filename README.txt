@@ -1,5 +1,4 @@
-This small library provide an easy way to run some tasks in batch 
-and track progress on the CLI.
+This small library provide an easy way to run some tasks in batch and track progress on the CLI.
 
 An example of output you can get is the following:
 
@@ -22,6 +21,7 @@ The module provide an api to define tasks and add them to a task engine:
 
     cli = SimpleCli()
     engine = TaskEngine(cli)
+
     engine.addTask(Print("Put oil in the pan"))
     engine.addTask(Print("Turn fire on"))
     engine.addTask(Print("Break the egg"))
@@ -29,9 +29,10 @@ The module provide an api to define tasks and add them to a task engine:
     engine.addTask(Print("Wait the egg is cooked"))
     engine.addTask(Print("Put the egg in the dish"))
     engine.addTask(Print("Add salt to the egg and eat it!"))
+
     engine.run()
 
-In the example above Print is a class extending Task (defined in the module) as follow:
+In the example above Print is a class extending Task (defined in the module):
 
      class Print(Task):
         "Simple Task: do nothing more than printing ..."
@@ -39,4 +40,4 @@ In the example above Print is a class extending Task (defined in the module) as 
         def run(self, cli):
             cli.newMessage
 
-In case a task fails the task engine stops immediately and return from the method run. :
+In case a task fails the task engine stops immediately and return from the method run.
