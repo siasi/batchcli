@@ -1,6 +1,6 @@
 This small library provide an easy way to run some tasks in batch and track progress on the CLI.
 
-An example of output you can get is the following:
+An example of output you can get is the following::
 
 	[ 1/7 ] Put oil in the pan
 	[ ... ] ...
@@ -17,7 +17,7 @@ An example of output you can get is the following:
 	[ 7/7 ] Add salt to the egg and eat it!
 	[ ... ] ...
 
-The module provide an api to define tasks and add them to a task engine:
+The module provide an api to define tasks and add them to a task engine::
 
     cli = SimpleCli()
     engine = TaskEngine(cli)
@@ -32,7 +32,7 @@ The module provide an api to define tasks and add them to a task engine:
 
     engine.run()
 
-In the example above Print is a class extending Task (defined in the module):
+In the example above Print is a class extending Task (defined in the module)::
 
      class Print(Task):
         "Simple Task: do nothing more than printing ..."
