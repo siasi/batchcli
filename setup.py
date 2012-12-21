@@ -14,7 +14,7 @@ from distutils.core import setup
 setup(
 	name = 'batchcli',
 	packages = ['batchcli'],
-	version = '0.1',
+	version = '0.2',
 	description = 'A simple API to run tasks in batch mode and track progress on CLI.',
 	url = 'https://github.com/siasi/batchcli',
 	author = 'Stefano Iasi',
