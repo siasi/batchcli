@@ -1,1 +1,1 @@
-from batchcli import batchcli 
+from batchcli import * 
