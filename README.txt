@@ -1,6 +1,6 @@
 This small library provide an easy way to run some tasks in batch and track progress on the CLI.
 
-An example of output you can get is the following:
+An example of output you can get is the following::
 
 	[ 1/7 ] Put oil in the pan
 	[ ... ] ...
