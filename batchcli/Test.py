@@ -91,6 +91,28 @@ class BatchCliTest(unittest.TestCase):
         self.assertEquals(2, self.cli.countAsk)
         self.assertEquals('s', answer)
 
+    def test_ask_with_no_options_and_default(self):
+        self.cli.pleaseAnswer("\n")
+        answer = self.c.ask("Which colour?", default='Yellow')
+        self.assertEquals("[  ?  ] Which colour? [Yellow]", self.cli.latestMessage,)
+        self.assertEquals('Yellow', answer)
+
+    def test_multiple_ask(self):
+        self.cli.pleaseAnswer("\n")
+        answer = self.c.ask("Which colour?", default='Yellow')
+        self.assertEquals("[  ?  ] Which colour? [Yellow]", self.cli.latestMessage,)
+        self.assertEquals('Yellow', answer)
+
+        self.cli.pleaseAnswer("\n")
+        answer = self.c.ask("Which size?", default='Medium')
+        self.assertEquals("[  ?  ] Which size? [Medium]", self.cli.latestMessage,)
+        self.assertEquals('Medium', answer)
+
+        self.cli.pleaseAnswer("\n")
+        answer = self.c.ask("Which shape?", default='Long')
+        self.assertEquals("[  ?  ] Which shape? [Long]", self.cli.latestMessage,)
+        self.assertEquals('Long', answer)
+
     def test_cannot_pass_suggest_but_default(self):
         with self.assertRaises(RuntimeError):
             self.c.ask("question without default", ['A','B'])

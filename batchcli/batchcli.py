@@ -137,15 +137,14 @@ class BatchCli():
 
         If options are provided by default is not raises a RuntimeError.
         """
-        
         if options and not default:
             raise RuntimeError("Cannot call ask with options and no default")
 
         if not options:
-            output = self.__buildQuestionOutput(question)
-            return self.cli.ask(output)
-
-        if options and default:
+            options_str = self.__getOptionsString(options, default)
+            answer = self.__getAnswer(question, options_str)
+            return self.__emptyStringToDefault(answer, default)
+        else:
             return self.__askWithOptions(question, options, default)
 
 
@@ -157,19 +156,33 @@ class BatchCli():
 
             validAnswers = [option.lower() for option in options]
             validAnswers.extend(options)
-
+            
             if answer in validAnswers:
                 return answer
             elif answer == "":
-                return default            
+                return default  
+
+    def __emptyStringToDefault(self, answer, default):
+            if answer == "":
+                return default
+            else:
+                return answer
 
     def __getOptionsString(self, options, default):
             result = []
-            result.append("(")
-            result.append("|".join(options))
-            result.append(") [")
-            result.append(default)
-            result.append("]")
+            optionOpenBracket = "["
+
+            if options:
+                result.append("(")
+                result.append("|".join(options))
+                result.append(")")
+                optionOpenBracket = " ["
+
+            if default:
+                result.append(optionOpenBracket)
+                result.append(default)
+                result.append("]")
+
             return "".join(result)
 
     def __getAnswer(self, question, options):
@@ -180,7 +193,10 @@ class BatchCli():
         self.tokens[1] = " ? "
         self.tokens[3] = message
         if options != "":
-            self.tokens.append(options)
+            newTokens = list(self.tokens)
+            newTokens.append(options)
+            return " ".join(newTokens)
+
         return " ".join(self.tokens)
 
     def __buildTaskOutput(self, message):
