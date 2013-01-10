@@ -70,6 +70,31 @@ class BatchCliTest(unittest.TestCase):
         self.assertEquals(2, self.cli.countAsk)
         self.assertTrue(answer)
 
+    def test_select(self):
+        values = ['v1', 'v2', 'v3']
+        self.cli.pleaseAnswer("v1")
+        answer = self.c.select("Please enter Origin or (L)ist possible values:", values)
+
+        self.assertEquals(self.cli.latestMessage, "[  ?  ] Please enter Origin or (L)ist possible values: [v1]")
+        self.assertEquals('v1', answer)
+
+    def test_select_when_not_valid_value_is_returned(self):
+        values = ['v1', 'v2', 'v3']
+        self.cli.pleaseAnswer("bad value", "v1")
+        answer = self.c.select("Please enter Origin or (L)ist possible values:", values)
+
+        self.assertEquals(self.cli.latestMessage, "[  ?  ] Please enter Origin or (L)ist possible values: [v1]")
+        self.assertEquals('v1', answer)
+
+    def test_select_print_all_values(self):
+        values = ['v1', 'v2', 'v3']
+        self.cli.pleaseAnswer('L', 'v1')
+        self.cli.expect(['- v1', '- v2', '- v3'])
+        answer = self.c.select("Please enter Origin or (L)ist possible values:", values)
+
+        self.cli.verify()
+
+
     def test_ask_when_user_aswer_right(self):
         self.cli.pleaseAnswer("E")
         answer = self.c.ask("Do you want to (C)ontinue, (S)kip or (E)xit?", ['C','S','E'], 'E')
@@ -151,6 +176,8 @@ class BatchCliTest(unittest.TestCase):
         self.assertEquals(2, self.cli.countAsk)
         self.assertTrue(answer)
 
+
+
 class TaskEngineTest(unittest.TestCase):
 
     def setUp(self):
@@ -202,25 +229,74 @@ class MockTask(Task):
 
 class FakeCli(Cli):
 
-	def __init__(self):
-		self.countAsk = 0
-		self.predefinedAnswer = []
+    def __init__(self):
+        self.countAsk = 0
+        self.predefinedAnswer = []
+        self.expectedMessages = []
+        self.messages = []
+        self.latestMessage = ""
 
-	def log(self, message):
-		self.latestMessage = message
+    def log(self, message):
+        self.latestMessage = message
+        self.messages.append(message)
 		
-	def ask(self, message):
-		self.latestMessage = message
-		return self.__getAnswer()
+    def ask(self, message):
+        self.latestMessage = message
+        return self.__getAnswer()
 
-	def __getAnswer(self):
-		answer = self.predefinedAnswer[self.countAsk]
-		self.countAsk = self.countAsk + 1
-		return answer
+    def __getAnswer(self):
+        answer = self.predefinedAnswer[self.countAsk]
+        self.countAsk = self.countAsk + 1
+        return answer
 
-	def pleaseAnswer(self, *answer):
-		self.countAsk = 0
-		self.predefinedAnswer = list(answer)
+    def pleaseAnswer(self, *answer):
+        self.countAsk = 0
+        self.predefinedAnswer = list(answer)
+
+    def expect(self, messages):
+        self.expectedMessages = messages
+
+    def verify(self):
+        if self.expectedMessages:
+            if not self.expectedMessages == self.messages:
+                raise AssertionError('Expected message "' + str(self.expectedMessages) + '" in sequence, but was "'  + str(self.messages) + '"')
+
+class FakeBatchCli(Cli):
+
+    def __init__(self):
+        self.countAsk = 0
+        self.countLog = 0
+        self.predefinedAnswer = []
+        self.expectedMessages = []
+        self.messages = []
+        self.latestMessage = ""
+
+
+    def newMessage(self, message):
+        self.latestMessage = message
+        self.messages.append(message)
+
+    def ask(self, message, default=None):
+        self.latestMessage = message
+        self.messages.append(message)
+        return self.__getAnswer()
+
+    def negate(self, message, default=None):
+        self.latestMessage = message
+        return False
+
+    def __getAnswer(self):
+        if self.countAsk not in range(0, len(self.predefinedAnswer)):
+            raise AssertionError("Unexpected call to ask method!")
+        answer = self.predefinedAnswer[self.countAsk]
+        self.countAsk = self.countAsk + 1
+        return answer
+
+    def pleaseAnswer(self, *answer):
+        self.countAsk = 0
+        self.predefinedAnswer = list(answer)
+
+
 
 
 if __name__ == "__main__":

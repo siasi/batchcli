@@ -147,6 +147,18 @@ class BatchCli():
         else:
             return self.__askWithOptions(question, options, default)
 
+    def select(self, message, values):
+        optionsString = self.__getOptionsString([], values[0])
+        output = self.__buildQuestionOutput(message, optionsString)
+
+        while True:
+            answer = self.__getAnswer(message, optionsString)
+            
+            if answer in values:
+                return answer
+            elif answer in 'Ll':
+                for value in values:
+                    self.cli.log('- ' + value)
 
     def __askWithOptions(self, question, options, default):
         options_str = self.__getOptionsString(options, default)
