@@ -148,7 +148,8 @@ class BatchCli():
             return self.__askWithOptions(question, options, default)
 
     def select(self, message, values):
-        optionsString = self.__getOptionsString([], values[0])
+        default = values[0]
+        optionsString = self.__getOptionsString([], default)
         output = self.__buildQuestionOutput(message, optionsString)
 
         while True:
@@ -156,9 +157,11 @@ class BatchCli():
             
             if answer in values:
                 return answer
+	    elif answer == '':
+	        return default
             elif answer in 'Ll':
                 for value in values:
-                    self.cli.log('- ' + value)
+                    self.cli.log(self.__buildHeader('  ' + value))
 
     def __askWithOptions(self, question, options, default):
         options_str = self.__getOptionsString(options, default)
@@ -218,6 +221,11 @@ class BatchCli():
 
     def __buildMessageOutput(self, message):
         self.tokens[1] = "..."
+        self.tokens[3] = message
+        return " ".join(self.tokens)
+	
+    def __buildHeader(self, message):
+        self.tokens[1] = " - "
         self.tokens[3] = message
         return " ".join(self.tokens)
 
