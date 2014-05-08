@@ -13,9 +13,9 @@ An example of output you can get is the following::
     [ ... ] Put the eggs into the pan ...
     [ 4/6 ] Wait the eggs is cooked
     [ ... ] ...
-    [ 5/6 ] Put the egg in the dish
+    [ 5/6 ] Put the eggs in the dish
     [ ... ] ...
-    [ 6/6 ] Add salt to the egg and eat it!
+    [ 6/6 ] Add salt to the eggs and eat it!
     [ ... ] ...
 
 
@@ -28,8 +28,8 @@ The module provide an api to define tasks and add them to a task engine::
     engine.addTask(Print("Turn fire on"))
     engine.addTask(CookingEggs("Cooking the eggs"))
     engine.addTask(Print("Wait the eggs is cooked"))
-    engine.addTask(Print("Put the egg in the dish"))
-    engine.addTask(Print("Add salt to the egg and eat it!"))
+    engine.addTask(Print("Put the eggs in the dish"))
+    engine.addTask(Print("Add salt to the eggs and eat it!"))
 
     engine.run()
 
