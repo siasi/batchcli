@@ -2,20 +2,22 @@ This small library provide an easy way to run some tasks in batch and track prog
 
 An example of output you can get is the following::
 
-	[ 1/7 ] Put oil in the pan
-	[ ... ] ...
-	[ 2/7 ] Turn fire on
-	[ ... ] ...
-	[ 3/7 ] Break the egg
-	[ ... ] ...
-	[ 4/7 ] Put the egg in the pan
-	[ ... ] ...
-	[ 5/7 ] Wait the egg is cooked
-	[ ... ] ...
-	[ 6/7 ] Put the egg in the dish
-	[ ... ] ...
-	[ 7/7 ] Add salt to the egg and eat it!
-	[ ... ] ...
+	[ 1/6 ] Put oil in the pan
+    [ ... ] ...
+    [ 2/6 ] Turn fire on
+    [ ... ] ...
+    [ 3/6 ] Cooking the eggs
+    [  ?  ] How many eggs? (1|2|3) [1] 2
+    [ ... ] Break the eggs ...
+    [ ... ] Throw the eggshell ...
+    [ ... ] Put the eggs into the pan ...
+    [ 4/6 ] Wait the eggs is cooked
+    [ ... ] ...
+    [ 5/6 ] Put the egg in the dish
+    [ ... ] ...
+    [ 6/6 ] Add salt to the egg and eat it!
+    [ ... ] ...
+
 
 The module provide an api to define tasks and add them to a task engine::
 
@@ -24,9 +26,8 @@ The module provide an api to define tasks and add them to a task engine::
 
     engine.addTask(Print("Put oil in the pan"))
     engine.addTask(Print("Turn fire on"))
-    engine.addTask(Print("Break the egg"))
-    engine.addTask(Print("Put the egg in the pan"))
-    engine.addTask(Print("Wait the egg is cooked"))
+    engine.addTask(CookingEggs("Cooking the eggs"))
+    engine.addTask(Print("Wait the eggs is cooked"))
     engine.addTask(Print("Put the egg in the dish"))
     engine.addTask(Print("Add salt to the egg and eat it!"))
 
@@ -39,5 +40,16 @@ In the example above Print is a class extending Task (defined in the module)::
 
         def run(self, cli):
             cli.newMessage
+
+The same for CookingEggs that is able to ask an input to the user::
+
+    class CookingEggs(Task):
+        "Simple Task: do nothing more than printing ..."
+
+        def run(self, cli):
+            eggs = cli.ask("How many eggs?", ["1", "2", "3"], "1")
+            cli.newMessage("Break the eggs ...")
+            cli.newMessage("Throw the eggshell ...")
+            cli.newMessage("Put the eggs into the pan ...")
 
 In case a task fails the task engine stops immediately and return from the method run.

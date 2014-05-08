@@ -297,15 +297,25 @@ if __name__ == "__main__":
         def run(self, cli):
             cli.newMessage("...")
 
+    class CookingEggs(Task):
+        "Simple Task: do nothing more than printing ..."
+
+        def run(self, cli):
+            eggs = cli.ask("How many eggs?", ["1", "2", "3"], "1")
+            cli.newMessage("Break the eggs ...")
+            cli.newMessage("Throw the eggshell ...")
+            cli.newMessage("Put the eggs into the pan ...")
+
     cli = SimpleCli()
     engine = TaskEngine(cli)
+
     engine.addTask(Print("Put oil in the pan"))
     engine.addTask(Print("Turn fire on"))
-    engine.addTask(Print("Break the egg"))
-    engine.addTask(Print("Put the egg in the pan"))
-    engine.addTask(Print("Wait the egg is cooked"))
+    #engine.addTask(CookingEggs("Cooking the eggs"))
+    engine.addTask(Print("Wait the eggs is cooked"))
     engine.addTask(Print("Put the egg in the dish"))
     engine.addTask(Print("Add salt to the egg and eat it!"))
+    
     engine.run()
 
 
