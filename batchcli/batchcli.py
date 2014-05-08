@@ -313,10 +313,7 @@ if __name__ == "__main__":
     engine.addTask(Print("Turn fire on"))
     #engine.addTask(CookingEggs("Cooking the eggs"))
     engine.addTask(Print("Wait the eggs is cooked"))
-    engine.addTask(Print("Put the egg in the dish"))
-    engine.addTask(Print("Add salt to the egg and eat it!"))
-    
+    engine.addTask(Print("Put the eggs in the dish"))
+    engine.addTask(Print("Add salt to the eggs and eat it!"))
+
     engine.run()
-
-
-
