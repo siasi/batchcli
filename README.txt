@@ -2,7 +2,7 @@ This small library provide an easy way to run some tasks in batch and track prog
 
 An example of output you can get is the following::
 
-	[ 1/6 ] Put oil in the pan
+    [ 1/6 ] Put oil in the pan
     [ ... ] ...
     [ 2/6 ] Turn fire on
     [ ... ] ...
