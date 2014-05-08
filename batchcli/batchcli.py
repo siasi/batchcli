@@ -172,18 +172,21 @@ class BatchCli():
             output = self.__buildQuestionOutput(message, optionsString)
             answer = self.cli.ask(output).strip()
             
-            try: 
-                int_answer = int(answer) - 1
-            except ValueError:
-                continue 
+            int_answer = self.__to_int_answer(answer)
 
             if int_answer > 0 and int_answer <= len(values):
                 return values[int_answer]
             elif answer == '':
                 return default
             elif answer in 'Ll':
-                for value in values:
-                    self.cli.log(self.__buildHeader('  ' + value))
+                for count in range(0, len(values)):
+                    self.cli.log(self.__buildHeader('  ' + str(count + 1) + '. ' + values[count]))
+
+    def __to_int_answer(self, str_value):
+        try: 
+            return int(str_value) - 1
+        except ValueError:
+            return -1 
 
     def __askWithOptions(self, question, options, default):
         options_str = self.__getOptionsString(options, default)

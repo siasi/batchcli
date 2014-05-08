@@ -98,17 +98,17 @@ class BatchCliTest(unittest.TestCase):
         values = ['v1', 'v2', 'v3']
         self.cli.pleaseAnswer('L', 'v1')
         self.cli.expect(['[  -  ]   v1', '[  -  ]   v2', '[  -  ]   v3'])
-        answer = self.c.select("Please enter Origin or (L)ist possible values:", values)
+        answer = self.c.select("Please select Origin:", values)
 
         self.cli.verify()
 
-#    def test_choose_print_all_values(self):
-#        values = ['v1', 'v2', 'v3']
-#        self.cli.pleaseAnswer('L', 'v1')
-#        self.cli.expect(['[  -  ]   v1', '[  -  ]   v2', '[  -  ]   v3'])
-#        answer = self.c.choose("Please enter Origin or (L)ist possible values:", values)
+    def test_choose_print_all_values(self):
+        values = ['v1', 'v2', 'v3']
+        self.cli.pleaseAnswer('L', '2')
+        self.cli.expect(['[  -  ]   1. v1', '[  -  ]   2. v2', '[  -  ]   3. v3'])
+        answer = self.c.choose("Please choose Origin or (L)ist possible values:", values)
 
-#        self.cli.verify()
+        self.cli.verify()
 
 
     def test_ask_when_user_aswer_right(self):
