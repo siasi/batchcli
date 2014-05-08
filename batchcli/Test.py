@@ -78,6 +78,14 @@ class BatchCliTest(unittest.TestCase):
         self.assertEquals(self.cli.latestMessage, "[  ?  ] Please enter Origin or (L)ist possible values: [v1]")
         self.assertEquals('v1', answer)
 
+    def test_choose(self):
+        values = ['v1', 'v2', 'v3']
+        self.cli.pleaseAnswer("2")
+        answer = self.c.choose("Please select Origin:", values)
+
+        self.assertEquals(self.cli.latestMessage, "[  ?  ] Please select Origin: [v1]")
+        self.assertEquals('v2', answer)
+
     def test_select_when_not_valid_value_is_returned(self):
         values = ['v1', 'v2', 'v3']
         self.cli.pleaseAnswer("bad value", "v1")
@@ -89,10 +97,18 @@ class BatchCliTest(unittest.TestCase):
     def test_select_print_all_values(self):
         values = ['v1', 'v2', 'v3']
         self.cli.pleaseAnswer('L', 'v1')
-        self.cli.expect(['- v1', '- v2', '- v3'])
+        self.cli.expect(['[  -  ]   v1', '[  -  ]   v2', '[  -  ]   v3'])
         answer = self.c.select("Please enter Origin or (L)ist possible values:", values)
 
         self.cli.verify()
+
+#    def test_choose_print_all_values(self):
+#        values = ['v1', 'v2', 'v3']
+#        self.cli.pleaseAnswer('L', 'v1')
+#        self.cli.expect(['[  -  ]   v1', '[  -  ]   v2', '[  -  ]   v3'])
+#        answer = self.c.choose("Please enter Origin or (L)ist possible values:", values)
+
+#        self.cli.verify()
 
 
     def test_ask_when_user_aswer_right(self):

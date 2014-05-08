@@ -1,4 +1,4 @@
-"""Batch CLI provide a simple API to manage batch process CLI.
+"""Batch CLI provide a simple API to manage batch process via CLI.
 The API can be used when one or more tasks need to be executed
 providing output messages to the user. 
 It is also possible to request input to the user.
@@ -157,8 +157,30 @@ class BatchCli():
             
             if answer in values:
                 return answer
-	    elif answer == '':
-	        return default
+            elif answer == '':
+                return default
+            elif answer in 'Ll':
+                for value in values:
+                    self.cli.log(self.__buildHeader('  ' + value))
+
+    def choose(self, message, values):
+        default = values[0]
+        optionsString = self.__getOptionsString([], default)
+        output = self.__buildQuestionOutput(message, optionsString)
+
+        while True:
+            output = self.__buildQuestionOutput(message, optionsString)
+            answer = self.cli.ask(output).strip()
+            
+            try: 
+                int_answer = int(answer) - 1
+            except ValueError:
+                continue 
+
+            if int_answer > 0 and int_answer <= len(values):
+                return values[int_answer]
+            elif answer == '':
+                return default
             elif answer in 'Ll':
                 for value in values:
                     self.cli.log(self.__buildHeader('  ' + value))
